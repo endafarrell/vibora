@@ -77,17 +77,15 @@ class RangeFile:
         self._file.close()
 
     def stream(self):
-        for chunk in self:
-            yield chunk
+        yield from self
 
 
 def clean_route_name(prefix: str, name: str) -> str:
     if prefix:
         if prefix[0] == ':':
             prefix = prefix[1:]
-        if len(prefix) > 0:
-            if prefix[len(prefix)-1] == ':':
-                prefix = prefix[:len(prefix) - 1]
+        if len(prefix) > 0 and prefix[len(prefix) - 1] == ':':
+            prefix = prefix[:len(prefix) - 1]
         if len(prefix) > 0:
             return prefix + '.' + name
     return name

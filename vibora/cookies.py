@@ -123,8 +123,7 @@ class SessionCookiesJar:
     @property
     def cookies(self) -> Iterator:
         for jar in self._domains.values():
-            for cookie in jar.cookies.values():
-                yield cookie
+            yield from jar.cookies.values()
 
     def merge(self, jar: CookiesJar, domain: str):
         self._domains[domain].merge(jar)

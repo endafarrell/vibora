@@ -160,7 +160,7 @@ class HooksTestSuite(TestSuite):
         @self.app.route('/')
         async def home():
             async def slow_streaming():
-                for _ in range(0, 5):
+                for _ in range(5):
                     yield b'123'
                     await asyncio.sleep(1)
             return StreamingResponse(slow_streaming)

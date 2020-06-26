@@ -21,7 +21,7 @@ class CythonTemplateCompiler(TemplateCompiler):
     def __init__(self, flavor=CompilerFlavor.TEMPLATE, temporary_dir: str=None):
         super().__init__()
         self.content = ''
-        self.current_scope = list()
+        self.current_scope = []
         self.accumulated_text = ''
         self.content_var = '__content__'
         self.context_var = '__context__'
@@ -32,7 +32,7 @@ class CythonTemplateCompiler(TemplateCompiler):
     def clean(self):
         self._indentation = 0
         self.content = ''
-        self.current_scope = list()
+        self.current_scope = []
         self.accumulated_text = ''
         self.functions = []
         self.flavor = CompilerFlavor.TEMPLATE

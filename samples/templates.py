@@ -3,7 +3,7 @@ from vibora import Vibora
 
 app = Vibora()
 
-t = [x for x in range(0, 5)]
+t = [x for x in range(5)]
 
 
 @app.route('/')

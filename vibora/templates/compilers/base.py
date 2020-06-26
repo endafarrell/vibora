@@ -19,11 +19,12 @@ class TemplateCompiler:
 
     def rollback(self):
         self.flush_text()
-        if self.pending_statement and self._indentation > 4:
-            self.add_statement('pass')
-        elif self.pending_statement and self._indentation == 4:
-            # This is a special case when the template is actually empty.
-            self.add_statement("yield ''")
+        if self.pending_statement:
+            if self._indentation > 4:
+                self.add_statement('pass')
+            elif self._indentation == 4:
+                # This is a special case when the template is actually empty.
+                self.add_statement("yield ''")
         self._indentation -= 4
 
     def add_text(self, content: str):

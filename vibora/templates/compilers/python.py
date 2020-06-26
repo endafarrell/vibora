@@ -15,7 +15,7 @@ class PythonTemplateCompiler(TemplateCompiler):
         super().__init__()
         self.meta = None
         self.content = ''
-        self.current_scope = list()
+        self.current_scope = []
         self.accumulated_text = ''
         self.content_var = '__content__'
         self.context_var = '__context__'
@@ -57,7 +57,7 @@ class PythonTemplateCompiler(TemplateCompiler):
         """
         self.meta = None
         self.content = ''
-        self.current_scope = list()
+        self.current_scope = []
         self.accumulated_text = ''
         self.functions = []
         self.flavor = CompilerFlavor.TEMPLATE

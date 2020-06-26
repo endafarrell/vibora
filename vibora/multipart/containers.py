@@ -97,8 +97,7 @@ class MultipartEncoder:
         for name, value in self.params.items():
             header = self.delimiter + b'\r\n' + self.create_headers(name, value) + b'\r\n\r\n'
             yield header
-            for chunk in self.stream_value(value):
-                yield chunk
+            yield from self.stream_value(value)
             yield b'\r\n'
         yield self.delimiter + b'--'
         self.evaluated = True

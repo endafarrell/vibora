@@ -252,10 +252,7 @@ class Response:
 
     def __repr__(self):
         if 400 > self.status_code >= 300:
-            if len(self.url) > 30:
-                url = self.url[:30] + '...'
-            else:
-                url = self.url
+            url = self.url[:30] + '...' if len(self.url) > 30 else self.url
             return f'<Response [{self.status_code} => "{url}"]>'
         else:
             return f'<Response [{self.status_code}]>'

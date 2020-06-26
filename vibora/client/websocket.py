@@ -85,7 +85,6 @@ class WebsocketClient:
     async def send(self, msg):
         if not self.connected:
             await self.connect()
-        pass
 
     async def receive(self, max_size: int = 1 * 1024 * 1024, stream: bool = False):
         pass

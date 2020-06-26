@@ -10,8 +10,7 @@ async def b():
 
 
 def gen():
-    for x in range(0, 1000):
-        yield x
+    yield from range(1000)
 
 
 y = gen()
@@ -27,7 +26,7 @@ async def render():
     template = engine.loaded_templates['test']
     c = engine.prepared_calls[template]
     t1 = time.time()
-    for _ in range(0, rounds):
+    for _ in range(rounds):
         asd = ''
         async for x in c({'x': b, 'y': y}):
             asd += x
@@ -38,7 +37,7 @@ loop.run_until_complete(render())
 
 t1 = time.time()
 t = Template(content, enable_async=True)
-for _ in range(0, rounds):
+for _ in range(rounds):
     t.render({'x': b, 'y': y})
 print('Jinja2: ', time.time() - t1)
 

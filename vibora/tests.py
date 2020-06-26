@@ -24,9 +24,7 @@ class TestSuite(unittest.TestCase):
 
     @staticmethod
     async def _async_join(streaming):
-        items = []
-        async for chunk in streaming:
-            items.append(chunk)
+        items = [chunk for chunk in streaming]
         try:
             if isinstance(items[0], bytes):
                 return b''.join(items)

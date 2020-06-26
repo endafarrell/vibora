@@ -54,7 +54,7 @@ class Router:
         :param route:
         :return:
         """
-        if not route.is_dynamic and not route.hosts:
+        if not (route.is_dynamic or route.hosts):
             for method in route.methods:
                 self.routes.setdefault(method, {})[route.pattern] = route
         elif route.hosts:
@@ -64,7 +64,7 @@ class Router:
                 routes = self.hosts.setdefault(host, {})
                 for method in route.methods:
                     routes.setdefault(method, []).append(route)
-        elif route.is_dynamic:
+        else:
             for method in route.methods:
                 self.dynamic_routes.setdefault(method, []).append(route)
         self.reverse_index[route.name] = route
@@ -273,20 +273,20 @@ class Route:
     def call_handler(self, request: Request, components):
         if not self.receive_params:
             return self.handler()
-        else:
-            if self.has_parameters:
-                match = self.regex.match(request.url)
-            function_params = {}
-            try:
-                for name, type_ in self.components:
-                    if name in self.params_book:
-                        function_params[name] = PatternParser.CAST[type_](match.group(name))
-                    else:
-                        function_params[name] = components.get(type_)
-            except MissingComponent as error:
-                error.route = self
-                raise error
-            return self.handler(**function_params)
+
+        if self.has_parameters:
+            match = self.regex.match(request.url)
+        function_params = {}
+        try:
+            for name, type_ in self.components:
+                if name in self.params_book:
+                    function_params[name] = PatternParser.CAST[type_](match.group(name))
+                else:
+                    function_params[name] = components.get(type_)
+        except MissingComponent as error:
+            error.route = self
+            raise error
+        return self.handler(**function_params)
 
     def build_url(self, **kwargs):
         if not self.is_dynamic:

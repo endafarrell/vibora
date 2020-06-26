@@ -20,7 +20,5 @@ class Necromancer(threading.Thread):
                 if not worker.is_alive():
                     worker = self.spawn_function()
                     worker.start()
-                    workers_alive.append(worker)
-                else:
-                    workers_alive.append(worker)
+                workers_alive.append(worker)
             self.app.workers = workers_alive

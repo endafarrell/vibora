@@ -38,10 +38,7 @@ class HTTPEngine:
         """
         key = (protocol, host, port)
         if port in (0, None):
-            if protocol == 'https':
-                port = 443
-            else:
-                port = 80
+            port = 443 if protocol == 'https' else 80
         try:
             return self.pools[key]
         except KeyError:
@@ -119,11 +116,10 @@ class HTTPEngine:
         response = Response(request.url, connection, request=request, decode=decode)
         await response.receive_headers()
         self.session.cookies.merge(await response.cookies, domain=request.url.host)
-        if follow_redirects:
-            if response.is_redirect():
-                await response.read_content()
-                return await self.handle_redirect(request, response, stream, follow_redirects,
-                                                  max_redirects, decode, validate_ssl, headers)
+        if follow_redirects and response.is_redirect():
+            await response.read_content()
+            return await self.handle_redirect(request, response, stream, follow_redirects,
+                                              max_redirects, decode, validate_ssl, headers)
         if not stream:
             await response.read_content()
         return response
@@ -165,16 +161,13 @@ class Session:
     def build_url(prefix: bytes, url: bytes, query: dict):
         if not url:
             raise ValueError('Url parameter must not be empty.')
-        if prefix and prefix.endswith(b'/'):
-            if url.startswith(b'/'):
-                url = url[1:]
-            url = prefix + url
-        elif prefix:
-            if url.startswith(b'/'):
+        if prefix:
+            if prefix.endswith(b'/'):
+                if url.startswith(b'/'):
+                    url = url[1:]
                 url = prefix + url
             else:
-                url = prefix + b'/' + url
-
+                url = prefix + url if url.startswith(b'/') else prefix + b'/' + url
         if not url.startswith(b'http'):
             raise MissingSchema(f'Missing schema in {url.decode(URL_ENCODING)}. '
                                 f'Perhaps you meant http://{url.decode(URL_ENCODING)} ?.')
@@ -226,10 +219,7 @@ class Session:
                     url=parsed_url, data=body, method=method, stream=stream,
                     follow_redirects=follow_redirects, max_redirects=max_redirects, decode=decode,
                     validate_ssl=ssl, headers=request_headers)
-                if timeout:
-                    response = await asyncio.wait_for(task, timeout)
-                else:
-                    response = await task
+                response = await asyncio.wait_for(task, timeout) if timeout else await task
                 if retries.responses.get(response.status_code, 0) > 0:
                     retries.responses[response.status_code] -= 1
                     continue

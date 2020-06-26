@@ -68,11 +68,7 @@ class RequestHandler(Process):
             # Waiting all connections finish their tasks, after the given timeout
             # the connection will be closed abruptly.
             while timeout:
-                all_closed = True
-                for connection in self.app.connections:
-                    if not connection.is_closed():
-                        all_closed = False
-                        break
+                all_closed = all(connection.is_closed() for connection in self.app.connections)
                 if all_closed:
                     break
                 timeout -= 1

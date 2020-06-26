@@ -39,10 +39,10 @@ class TemplateEngine:
         :param template:
         :return:
         """
-        keys_to_remove = []
-        for name, t in self.templates.items():
-            if t.hash == template.hash:
-                keys_to_remove.append(name)
+        keys_to_remove = [
+            name for name, t in self.templates.items() if t.hash == template.hash
+        ]
+
         for key in keys_to_remove:
             try:
                 del self.templates[key]
@@ -161,7 +161,7 @@ class TemplateEngine:
         """
         updated_hashes = [t.hash for t in self.templates.values()]
         for template_hash, meta in self.cache.loaded_metas.items():
-            if any([x for x in meta.dependencies if x not in updated_hashes]):
+            if any(x for x in meta.dependencies if x not in updated_hashes):
                 self.cache.remove(template_hash)
 
     def compile_templates(self, verbose=False):
@@ -189,4 +189,4 @@ class TemplateEngine:
             self.compiled_templates[template.hash] = compiled_template
 
         # Cleaning old template cache files.
-        self.cache.clean(set([t.hash for t in self.templates.values()]))
+        self.cache.clean({t.hash for t in self.templates.values()})

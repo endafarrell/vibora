@@ -176,10 +176,7 @@ class Vibora(Application):
         keys = deque(self.exception_handlers.keys())
         while keys:
             current_key = keys.pop()
-            found = False
-            for key in keys:
-                if issubclass(current_key, key):
-                    found = True
+            found = any(issubclass(current_key, key) for key in keys)
             if not found:
                 cache.append(current_key)
             else:
@@ -279,7 +276,7 @@ class Vibora(Application):
 
         # Starting workers.
         spawn_function = partial(RequestHandler, self, host, port, sock)
-        for _ in range(0, (workers or cpu_count() + 2)):
+        for _ in range((workers or cpu_count() + 2)):
             worker = spawn_function()
             worker.start()
             self.workers.append(worker)

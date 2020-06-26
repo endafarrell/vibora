@@ -27,8 +27,7 @@ class ParsedTemplate(Template):
     def flat_view(current_node: Node):
         for child in current_node.children:
             yield child
-            for c in ParsedTemplate.flat_view(child):
-                yield c
+            yield from ParsedTemplate.flat_view(child)
 
 
 class CompiledTemplate(ParsedTemplate):

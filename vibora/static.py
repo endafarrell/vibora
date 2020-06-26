@@ -95,9 +95,8 @@ class StaticHandler:
     def parse_response(self, request: Request, cache: CacheEntry):
         # Handling Last Modified
         last_modified_client = self.get_last_modified_header(request)
-        if last_modified_client:
-            if cache.last_modified <= last_modified_client:
-                return self.default_responses[304]
+        if last_modified_client and cache.last_modified <= last_modified_client:
+            return self.default_responses[304]
 
         # Handling etags
         etag_client = request.headers.get('If-None-Match')
@@ -130,8 +129,7 @@ class StaticHandler:
     @staticmethod
     def get_range_pieces(header: str) -> list:
         header = header[header.find('=')+1:]
-        values = header.strip().split('-')
-        return values
+        return header.strip().split('-')
 
     async def handle(self, request: Request):
         path = self.extract_path(request)

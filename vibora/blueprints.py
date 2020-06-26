@@ -42,7 +42,7 @@ class Blueprint:
             values = value if isinstance(value, (list, tuple)) else [value]
             for v in values:
                 if v in Events.ALL:
-                    self.add_hook(Hook(v, args[0], local=local))
+                    self.add_hook(Hook(v, handler, local=local))
                 elif isinstance(v, Exception) or (isclass(v) and issubclass(v, Exception)):
                     self.exception_handlers[v] = ExceptionHandler(handler, v, local=local)
                 else:
@@ -67,11 +67,7 @@ class Blueprint:
             route_name = handler.__name__ if name is None else name
 
             # Patterns should be bytes.
-            if isinstance(pattern, str):
-                encoded_pattern = pattern.encode()
-            else:
-                encoded_pattern = pattern
-
+            encoded_pattern = pattern.encode() if isinstance(pattern, str) else pattern
             new_route = Route(encoded_pattern, handler, tuple(methods or (b'GET',)),
                               parent=self, name=route_name, cache=chosen_cache,
                               hosts=hosts or self.hosts, limits=limits or self.limits)
@@ -156,7 +152,7 @@ class Blueprint:
         if blueprint.parent:
             raise DuplicatedBlueprint('You cannot add a blueprint twice. Use more prefixes or different hierarchy.')
 
-        for key in prefixes.keys():
+        for key in prefixes:
             for existent_prefix in self.blueprints.values():
                 if key == existent_prefix:
                     raise ConflictingPrefixes(

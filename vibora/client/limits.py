@@ -19,10 +19,7 @@ class RequestRate:
         the throughput... By default Vibora is optimistic and assumes that the server will honor the rate/period
         accurately.
         """
-        if isinstance(pattern, str):
-            self.pattern = re.compile(pattern)
-        else:
-            self.pattern = pattern
+        self.pattern = re.compile(pattern) if isinstance(pattern, str) else pattern
         self.optimistic = optimistic
         self._count = count
         self._period = period
@@ -41,10 +38,7 @@ class RequestRate:
             self._next_flush = now + self._period
             self._actual_usage = 0
         elif now < self._next_flush and self._actual_usage >= self._count:
-            if self.optimistic:
-                wait_time = (self._next_flush - now) or 0
-            else:
-                wait_time = self._period
+            wait_time = (self._next_flush - now) or 0 if self.optimistic else self._period
             await asyncio.sleep(wait_time)
             self._actual_usage = 0
         self._actual_usage += 1

@@ -42,7 +42,7 @@ class Request:
                 await connection.sendall(size + b'\r\n' + chunk + b'\r\n')
             await connection.sendall(b'0\r\n\r\n')
 
-        elif not self.chunked:
+        else:
             body = bytearray()
             for chunk in self.data:
                 body.extend(chunk)

@@ -171,7 +171,7 @@ class Application(Blueprint):
             raise ReverseNotFound(_name)
         root = ''
         if _external:
-            if not self.server_name or not self.url_scheme:
+            if not (self.server_name and self.url_scheme):
                 raise Exception('Please configure the server_name and url_scheme to use external urls.')
             root = self.url_scheme + '://' + self.server_name
         return root + route.build_url(*args, **kwargs).decode()

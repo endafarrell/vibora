@@ -13,7 +13,7 @@ url = 'http://127.0.0.1:8000/'
 async def vibora():
     t1 = time.time()
     with Session(keep_alive=True) as client:
-        for _ in range(0, max):
+        for _ in range(max):
             await client.get(url)
     print('Vibora: ', time.time() - t1)
 
@@ -21,7 +21,7 @@ async def vibora():
 async def aiohttp():
     t1 = time.time()
     async with ClientSession() as session:
-        for _ in range(0, max):
+        for _ in range(max):
             await session.get(url)
     print('Aiohttp: ', time.time() - t1)
 
@@ -29,7 +29,7 @@ async def aiohttp():
 async def requests2():
     t1 = time.time()
     with requests.Session() as session:
-        for _ in range(0, max):
+        for _ in range(max):
             session.get(url)
     print('Requests: ', time.time() - t1)
 

@@ -13,7 +13,7 @@ class StreamingTestSuite(TestSuite):
         app = Vibora()
 
         async def stream():
-            for _ in range(0, 100):
+            for _ in range(100):
                 await asyncio.sleep(0.05)
                 yield b'1'
 
@@ -31,7 +31,7 @@ class StreamingTestSuite(TestSuite):
         app = Vibora()
 
         async def stream():
-            for _ in range(0, 100):
+            for _ in range(100):
                 await asyncio.sleep(2)
                 yield b'1'
 
@@ -53,7 +53,7 @@ class StreamingTestSuite(TestSuite):
         app = Vibora(server_limits=ServerLimits(write_buffer=1))
 
         async def stream():
-            for _ in range(0, 5):
+            for _ in range(5):
                 await asyncio.sleep(0)
                 yield b'1' * 1024 * 1024 * 100
 
